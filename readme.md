@@ -5,16 +5,16 @@ It will also collect system metrics like cpu,memory and disk using shutil and ps
 
 # Example Run
 ```
-python3 kafka-jmx-metric-collector.py /tmp/ kafka-dev
+python3 kafka-jmx-metric-collector.py localhost 9999 kafka-input.txt /tmp/ kafka-dev
 ```
-## Example Input File
+## Example Kafka Input File
 ```
 kafka.controller:type=KafkaController,name=OfflinePartitionsCount
 kafka.controller:type=KafkaController,name=ActiveControllerCount
 kafka.controller:type=ControllerStats,name=LeaderElectionRateAndTimeMs
 kafka.controller:type=ControllerStats,name=UncleanLeaderElectionsPerSec
 ```
-## Example OutPut File Size
+## Example Kafka OutPut File Size
 ```
 $ ls -lh /tmp/*.log
 -rw-rw-rw- 1 davinderpal davinderpal  10K Apr  2 12:23 /tmp/java.lang.log
@@ -25,7 +25,7 @@ $ ls -lh /tmp/*.log
 -rw-rw-rw- 1 davinderpal davinderpal 1.4K Apr  2 12:24 /tmp/kafka.utils.log
 ```
 
-## Example Output
+## Example Kafka Output
 ```
 {"@timestamp": "2020-04-01 18:16:35.180486", "controllerName": "kafka.controller", "environment": "kafka-dev", "queryName": "type=KafkaController,name=OfflinePartitionsCount/Value", "queryValue": "0"}
 {"@timestamp": "2020-04-01 18:16:35.180486", "controllerName": "kafka.controller", "environment": "kafka-dev", "queryName": "type=KafkaController,name=ActiveControllerCount/Value", "queryValue": "1"}
