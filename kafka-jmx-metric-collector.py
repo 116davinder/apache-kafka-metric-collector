@@ -10,8 +10,8 @@ from socket import gethostname
 from datetime import datetime
 import json
 import sys
-import shutil
 import psutil
+import threading
 
 class KafkaJmx:
     def __init__(self,kAddr,kPort,inputFile,logDir,env):
@@ -50,14 +50,15 @@ class KafkaJmx:
             open(self.logDir + domainName + ".log", 'w').close()
 
     def getStorageMetric(self):
-        total, used, free = shutil.disk_usage("/kafka")
+        _sMM = psutil.disk_usage("/kafka")
         _sMetric = {
                     "@timestamp": str(self.cTimeNow),
                     "domainName": "disk",
                     "environment": self.env,
-                    "totalInGB": total // (2**30),
-                    "usedInGB":  used // (2**30),
-                    "freeInGB": free // (2**30)
+                    "totalInGB": _sMM.total // (2**30),
+                    "usedInGB":  _sMM.used // (2**30),
+                    "freeInGB": _sMM.free // (2**30),
+                    "usedPercent": _sMM.percent
                     }
 
         with open(self.logDir + "disk.log", 'w') as logFile:
@@ -103,9 +104,22 @@ def main():
 
     z = KafkaJmx(hostname, port, inputFile, logDir,env)
     z.cleanUpFiles()
-    z.getMetric()
-    z.getCpuMetric()
-    z.getMemoryMetric()
-    z.getStorageMetric()
+
+    _metric_thread = threading.Thread(
+        target=z.getMetric
+    ).start()
+
+    _cpu_metric_thread = threading.Thread(
+        target=z.getCpuMetric
+    ).start()
+
+    _memory_metric_thread = threading.Thread(
+        target=z.getMemoryMetric
+    ).start()
+
+    _storage_metric_thread = threading.Thread(
+        target=z.getStorageMetric
+    ).start()
+
 
 main()
