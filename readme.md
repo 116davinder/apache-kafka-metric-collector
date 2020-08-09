@@ -1,3 +1,5 @@
+**This Repo is no longer required as latest code is already present in https://github.com/116davinder/kafka-cluster-ansible/tree/master/roles/jmxMonitor**
+
 # Kafka Metric Collector
 It will collect apache kafka metric using JMX.
 
